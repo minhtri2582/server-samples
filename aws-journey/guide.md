@@ -68,7 +68,7 @@ aws iam put-role-policy --role-name eks-CodeBuildServiceRole --policy-name codeb
 
 - Từ terminal máy của bạn, lấy thông tin ConfigMap aws-auth
 ```
-# kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
+kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
 ```
 <br>
 
@@ -110,7 +110,7 @@ metadata:
 
 - Apply file aws-auth.yaml từ terminal của bạn
 ```
-# kubectl apply -f aws-auth.yaml
+kubectl apply -f aws-auth.yaml
 ```
 Kết quả cấu hình đã được apply:
 ```
