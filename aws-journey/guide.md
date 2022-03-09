@@ -20,8 +20,11 @@ mv /tmp/eksctl /usr/local/bin
 eksctl version
 ```
 ### Create k8s cluster on aws
-> eksctl create cluster --spot --instance-types=c3.large,c4.large,c5.large --name k8s-demo
+```
+aws ec2 create-key-pair --key-name k8s-demo --query 'KeyMaterial' --output text> k8s-demo.pem
 
+eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k8s-demo --nodes 2 --ssh-access --ssh-public-key k8s-demo --managed
+```
 ### Deploy mywebsite
 ```
 kubectl create deployment mywebsite --image=minhtri2582/mywebsite
