@@ -7,11 +7,21 @@
 
 ### Install AWS CLI
 
-Để configure AWS CLI, thì bạn sẽ cần phải chuẩn bị 3 thứ:
+Để configure AWS CLI, thì bạn sẽ cần phải chuẩn bị:
 
 - Access Key ID
 - Secret Access Key
 - IAM Permission
+
+### Hướng dẫ tạo IAM User và áp dụng giới hạn quyền lên User
+
+- Đăng nhập vào IAM Management Console
+- Tại thanh bên trái chọn Users rồi chọn Add user.
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/01.png">
+- Tại trang Set user details, nhập những thông số sau rồi chọn Next Permissions:
+  - User name: ec2-admin.
+  - Access type: chọn Access key - Programmatic access
+    <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/06.png">
 
 ### AWS configure
 
