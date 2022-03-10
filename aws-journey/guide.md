@@ -82,16 +82,45 @@ eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/09.png">
 - Trong quá trình chờ, Bạn có thể sử dụng giao diện quản lý AWS CloudFormation kiểm tra trạng thái.
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/03.png">
+- Để kiểm tra, mình sẽ sử dụng kubectl:
+
+```
+kubectl get nodes
+```
+
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/10.png">
+
+- Kiểm tra trên AWS Console để xem các Resource được tạo
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/11.png">
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/12.png">
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/13.png">
 
 ### Deploy mywebsite
 
+- Tiếp theo, mình sẽ deploy Static Website vào EKS Cluster mình vừa tạo. Để deploy, đầu tiên mình sẽ chạy command sau:
+
 ```
 kubectl create deployment mywebsite --image=minhtri2582/mywebsite
+```
 
+- Để có thể truy cập Website từ bên ngoài EKS cluster, chúng ta sẽ phải deploy một LoadBalancer Service vào cluster bằng command sau:
+
+```
 kubectl expose deployments/mywebsite --type=LoadBalancer --port=80
+```
 
+- Để xem thông tin về LoadBalancer trên, mình sẽ chạy command sau:
+
+```
 kubectl get svc
 ```
+
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/14.png">
+
+- Copy link trong External-ip vào trình duyệt sẽ truy cập được website:
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/15.png">
+
+## Okay, vậy là mình đã deploy thành công Static Web Server vào EKS Cluster.
 
 <br>
 
