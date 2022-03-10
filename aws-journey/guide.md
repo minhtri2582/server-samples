@@ -22,10 +22,24 @@
   - User name: ec2-admin.
   - Access type: chọn Access key - Programmatic access
     <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/06.png">
+- Tại mục Set permissions, bạn cần làm những thao tác sau:
+  - Chọn Attach existing policies directly để gán policy trực tiếp vào IAM user.
+  - Tìm và tick vào AdministratorAccess để gán quyền Admin cho IAM user.
+    <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/02.png">
+- Kiểm tra và chọn Next: Tags
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/03.png">
+- Chọn Next Review để xem lại các thiết lập đã chọn:
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/04.png">
+- Tại trang Review, kiểm tra kỹ và chọn Create user.
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/05.png">
+- Như vậy User sẽ được tạo và chúng ta sẽ có được Access Key và Secret Access Key để sử dụng. Bạn có thể tải tập tin .csv để lưu trữ thông tin Access Key.
 
-### AWS configure
+### AWS configure - Kiểm tra thông tin biến môi trường của AWS trong Terminal của bạn
 
 > aws configure
+
+- Tại đây ta sẽ dùng cập Access Key vừa tạo để thiết lập môi trường kết nối với AWS và thực hiện cài đặt eksctl
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/07.png">
 
 ### Install eksctl
 
@@ -37,11 +51,21 @@ mv /tmp/eksctl /usr/local/bin
 eksctl version
 ```
 
-### Create k8s cluster on aws
+### Tạo k8s cluster trên AWS
+
+- Trước tiên để có thể làm việc với EKS Cluster ta cần tạo key pair bằng dòng lệnh
+  - Key Pair được dùng để mã hóa và giải mã thông tin đăng nhập vào máy chủ ảo EC2.
 
 ```
 aws ec2 create-key-pair --key-name k8s-demo --query 'KeyMaterial' --output text> k8s-demo.pem
+```
 
+Hoặc có thể thao tác tạo key pair trên AWS Console
+
+- Cà
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/08.png">
+
+```
 eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k8s-demo --nodes 2 --ssh-access --ssh-public-key k8s-demo --managed
 ```
 
