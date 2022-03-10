@@ -24,7 +24,7 @@
     <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/06.png">
 - Tại mục Set permissions, bạn cần làm những thao tác sau:
   - Chọn Attach existing policies directly để gán policy trực tiếp vào IAM user.
-  - Tìm và tick vào AdministratorAccess để gán quyền Admin cho IAM user.
+  - Tìm và tick vào AdministratorAccess để gán quyền Admin cho IAM user. Lưu ý: Đối với môi trường production thì bạn không nên làm gán quyền admin như này mà phải giới hạn permission của từng User.
     <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/02.png">
 - Kiểm tra và chọn Next: Tags
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/03.png">
@@ -53,8 +53,9 @@ eksctl version
 
 ### Tạo k8s cluster trên AWS
 
-- Trước tiên để có thể làm việc với EKS Cluster ta cần tạo key pair bằng dòng lệnh
+- Để tạo EKS cluster, trước tiên chúng ta sẽ phải tạo SSH key để có thể access vào EC2 Node trong Cluster khi cần thiết (Đây cũng là best practices mà Google khuyên các bạn làm theo).
   - Key Pair được dùng để mã hóa và giải mã thông tin đăng nhập vào máy chủ ảo EC2.
+  - Command này sẽ tạo một KeyPair có tên là k8s-demo và sẽ lưu kết quả vào k8s-demo.pem file.
 
 ```
 aws ec2 create-key-pair --key-name k8s-demo --query 'KeyMaterial' --output text> k8s-demo.pem
@@ -62,12 +63,25 @@ aws ec2 create-key-pair --key-name k8s-demo --query 'KeyMaterial' --output text>
 
 Hoặc có thể thao tác tạo key pair trên AWS Console
 
-- Cà
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/08.png">
+- Từ AWS Console vào mục EC2
+- Chọn mục Key Pair -> Chọn Create key pair
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/01.png">
+- Tại màn hình Create key pair nhập Name và chọn Create key pair
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/02.png">
+
+Cả 2 cách dùng AWS Console và AWS CLI đều cho ra kết quả như sau:
+<img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/08.png">
+
+- Để tạo EKS Cluster và các EC2 Node chúng ta sử dụng command sau:
 
 ```
 eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k8s-demo --nodes 2 --ssh-access --ssh-public-key k8s-demo --managed
 ```
+
+- Khi bạn chạy command này, thì eksctl sẽ sử dụng AWS CloudFormation để tạo các infrastructure cần thiết và setup Master Node (Control Plane).
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/09.png">
+- Trong quá trình chờ, Bạn có thể sử dụng giao diện quản lý AWS CloudFormation kiểm tra trạng thái.
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/03.png">
 
 ### Deploy mywebsite
 
