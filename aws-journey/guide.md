@@ -83,7 +83,7 @@ eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k
 kubectl get nodes
 ```
 
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/10.png">
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/10.png" alt="">
 
 - Kiểm tra trên AWS Console để xem các Resource được tạo
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/11.png">
@@ -110,7 +110,7 @@ kubectl expose deployments/mywebsite --type=LoadBalancer --port=80
 kubectl get svc
 ```
 
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/14.png">
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/14.png" alt="">
 
 - Copy link trong External-ip vào trình duyệt sẽ truy cập được website:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/15.png">
