@@ -122,7 +122,8 @@ kubectl get svc
 # 2 - Tạo CI/CD với AWS CodePipeline
 Đây là sơ đồ triển khai CI/CD bằng công cụ AWS CodePipeline chúng ta sẽ làm trong phần này:
 > **TODO:** Vẽ hình flow Github, CodePipeline, CodeBuild, ECR, EKS
-### 2.1 - Tạo S3 bucket
+### 2.1 - Chuẩn bị (S3, IAM Roles, RBAC) 
+1. Tạo S3 bucket
 Cho CodePiple lưu artifact (tạo ra tập tin build.json sau mỗi lần build)
 > **TODO:** Trí kiểm tra lại có thể bỏ S3 được không? build.json không dùng cho stage sau.
 ```
@@ -130,9 +131,9 @@ ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
 aws s3 mb s3://eks-${ACCOUNT_ID}-codepipeline-artifacts
 ```
 
-### 2.2 - Tạo Role CodePipelineServiceRole
-CodePileline và CodeBuild cần phải có các IAM roles để tạo Docker, push image và tương tác với EKS cluster qua command kubectl.
+2. Tạo Role CodePipelineServiceRole
 
+- CodePileline và CodeBuild cần phải có các IAM roles để tạo Docker, push image và tương tác với EKS cluster qua command kubectl.
 Tải các file json chính sách, sau đó tạo các role **eks-CodePipelineServiceRole, eks-CodePipelineServiceRole** và thêm inline policy từ terminal như sau:
 ```
 wget https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cpAssumeRolePolicyDocument.json
@@ -144,7 +145,7 @@ wget https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-jou
 aws iam put-role-policy --role-name eks-CodePipelineServiceRole --policy-name codepipeline-access --policy-document file://cpPolicyDocument.json
 ```
 
-### 2.3 - Tạo Role CodeBuildServiceRole
+3. Tạo Role CodeBuildServiceRole
 
 ```
 wget https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cbAssumeRolePolicyDocument.json
@@ -157,7 +158,7 @@ aws iam put-role-policy --role-name eks-CodeBuildServiceRole --policy-name codeb
 ```
 > **TODO:** Chụp hình show IAM roles đã được tạo trên AWS Console
 
-### 2.4 - Cho phép role eks-CodeBuildServiceRolequyền trong RBAC của EKS cluster
+4. Cho phép role eks-CodeBuildServiceRolequyền trong RBAC của EKS cluster
 Để CodeBuild có thể tương tác với EKS, chúng ta sẽ chỉnh sửa configMap **aws-auth**
 - Từ terminal đã kết nối EKS cluster, lấy bản sao configMap aws-auth bằng command:
 
@@ -228,10 +229,10 @@ kubectl apply -f aws-auth.yaml
 # configmap/aws-auth unchanged configured
 ```
 
-### 2.4 - Fork source code về GitHub
+### 2.2 - Fork source code về GitHub
 > **TODO:** hướng dẫn fork source từ Github của Được để có quyền push code, tạo personal token
 
-### 2.5 - Tạo CodePipeline bằng CloudFormation
+### 2.3 - Tạo CodePipeline bằng CloudFormation
 Bước tiếp theo chúng ta sẽ tạo CodePipeline sử dụng công cụ AWS ClouFormation. 
 1. Download template CloudFormation tại: <br> 
 https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db7ee495c834507991125ad/aws-journey/code_pipeline.yml
@@ -241,18 +242,18 @@ https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db
 2. Trong màn hình quản trị CloudFormation - Click **New Task**
 
 - Chọn file Upload: **code_pipeline.yml** đã download ở bước 1. Click **Next**:
-  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/CF-CreateTask.png"/>
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CF-CreateTask.png"/>
 
 <br>
 
-- Nhập thông tin GitHub (đã tạo ở mục 2.4) và EKS Cluster (đã tạo ở phần 1):
-  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/CF-Input.png"/>
+- Nhập thông tin GitHub (đã tạo ở phần 2.2) và EKS Cluster (đã tạo ở phần 1):
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CF-Input.png"/>
   Click **Next** và **Create Task** để tiếp tục.
 
 <br>
 
 - Chờ khoảng 5 phút để CloudFormation tạo các resource _CodePipeLine_, _CodePipeLine_ và _ECR Repository_:
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/CF-Progress.png"/>
+  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/CF-Progress.png"/>
 
   <br>
 
@@ -275,13 +276,13 @@ https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db
   <img src="https://github.com/minhtri2582/server-samples/raw/master/CB-DetailSuccess.png"/>
 > **TODO:** Chỉ rõ chỗ nào click để ra output này nha!
 
-### 2.5 - Kiểm tra CI/CD
-- Vào trang https://github.com/, chọn repository đã fork ở phần 2.4:
+### 2.4 - Kiểm tra CI/CD
+1. Vào trang https://github.com/, chọn repository đã fork ở phần 2.2:
 > **TODO:** Chụp hình source code GitHub
 
 <br>
 
-- Thử thay đổi nội dung thẻ title của tập tin <b>index.htlm</b>:
+2. Thử thay đổi nội dung thẻ title của tập tin <b>index.htlm</b>:
 
 ```
 <!doctype html>
@@ -296,15 +297,15 @@ https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db
 
 <br> 
 
-- Click **Commit changes**:
+3. Click **Commit changes**:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/github-commit-index.png"/>
 
 <br>
 
-- Sau khi push code, vào trang quản trị **CodePipeline** sẽ thấy trạng thái của pipeline là _In Progress_:
+4. Sau khi push code, vào trang quản trị **CodePipeline** sẽ thấy trạng thái của pipeline là _In Progress_:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/CP-trigger.png"/>
 
-- Chờ 5 phút để quá trình build _Success_. Vào website URL xem thay đổi:
+5. Chờ 5 phút để quá trình build _Success_. Vào website URL xem thay đổi:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/web-change.png"/>
 
 <br>
