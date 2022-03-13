@@ -1,4 +1,19 @@
-# 1 - Tạo EKS Cluster và deploy thử ứng dụng
+# Giới thiệu
+
+Kubernetes (K8s) là một nền tảng nguồn mở, có thể mở rộng để quản lý các ứng dụng được đóng gói và các service, giúp thuận lợi trong việc cấu hình và tự động hoá việc triển khai ứng dụng
+
+Trong bài lab này, chúng ta sẽ tạo một Kubernetes Cluster đơn giản trên AWS EKS (Elastic Kubernetes Service). Sau đó, mình sẽ triển khai trang web trên cluster và sử dụng AWS CodePipeLine để triển khai tự động. 
+
+Mô hình cơ bản EKS Cluster:
+
+<img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/eks.png"/>
+
+Nội dung bài viết:
+1. Tạo EKS Cluster và triển khai ứng dụng
+2. Tạo CodePipeline CI/CD
+3. Kiểm tra CI/CD
+
+# 1 - Tạo EKS Cluster và triển khai ứng dụng
 
 ### Install AWS CLI
 
@@ -8,7 +23,7 @@
 - Secret Access Key
 - IAM Permission
 
-### Hướng dẫ tạo IAM User và áp dụng giới hạn quyền lên User
+### Hướng dẫn tạo IAM User và áp dụng giới hạn quyền lên User
 
 - Đăng nhập vào IAM Management Console
 - Tại thanh bên trái chọn Users rồi chọn Add user.
