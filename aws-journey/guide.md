@@ -153,7 +153,7 @@ kubectl create deployment mywebsite --image=minhtri2582/mywebsite
 ```sh
 kubectl expose deployments/mywebsite --type=LoadBalancer --port=80
 ```
-> **Lưu ý**: _tên deployment **mywebsite**, chúng ra sẽ tên này trong phần 2, bạn có thể thay đổi nhưng phải match với tên với phần 2._ 
+> **Lưu ý**: _tên deployment **mywebsite**, chúng ra sẽ dùng tên này trong phần 2, bạn có thể thay đổi tên deployment nhưng phải match với tên ở phần 2._ 
 
 - Để xem thông tin về LoadBalancer trên, mình sẽ chạy command sau:
 
@@ -332,7 +332,7 @@ https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db
 <br>
 
 - Chúng ta có thể xem log output trong quá trình build và deploy:
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/CB-DetailSuccess.png"/>
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CB-DetailSuccess.png"/>
 > **TODO:** Chỉ rõ chỗ nào click để ra output này nha!
 
 ### 2.4 - Kiểm tra CI/CD
