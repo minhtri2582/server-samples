@@ -15,15 +15,34 @@ Nội dung bài viết:
 
 # 1 - Tạo EKS Cluster và triển khai ứng dụng
 
-### Install AWS CLI
+### Install AWS CLI 
+Để có thể sử dụng được  command  aws trên  terminal  (trên Linux/MAC) hoặc  cmd(Window) ta cần phải cài đặt AWS CLI.
+Tham khảo thêm ở đây https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html.
+Ở đây mình sử dụng cách đơn giản nhất cho MAC/Window là cài đặt trực tiếp file .exe(đối với Window) và file .pkg (đối với MAC).
+Lưu ý là guide này sử dụng cho terminal của MAC hoặc Linux.
+- MAC: https://awscli.amazonaws.com/AWSCLIV2.pkg
+- Window: https://awscli.amazonaws.com/AWSCLIV2.pkg
+- Linux: mở terminal và dùng lệnh 
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+unzip awscliv2.zip
+sudo ./aws/install 
+```
+Sau khi cài xong, mở terminal và gõ lệnh này vào 
+``` 
+aws --version
+// Nếu terminal của bạn hiển thị như vầy 
+aws-cli/2.4.0 Python/3.8.8 Darwin/20.3.0 exe/x86_64 prompt/off
+```
 
-Để configure AWS CLI, thì bạn sẽ cần phải chuẩn bị:
+Cài đặt AWS CLI đã xong
 
+##### Bước tiếp theo là cấu hình AWS CLI để có thể access vào  account AWS
+- IAM Permission
 - Access Key ID
 - Secret Access Key
-- IAM Permission
 
-### Hướng dẫn tạo IAM User và áp dụng giới hạn quyền lên User
+### Tạo IAM User và áp dụng giới hạn quyền lên User
 
 - Đăng nhập vào IAM Management Console
 - Tại thanh bên trái chọn Users rồi chọn Add user.
@@ -52,12 +71,11 @@ Nội dung bài viết:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/07.png">
 
 ### Install eksctl
-
+Tương tự AWS CLI, eksctl là một CLI đơn giản để tạo và quản lý các  cluster trên EKS
+Để sử dụng được eksctl, trước hết phải cài đặt, các bước cài đặt sử dụng  terminal sau khi đã config AWS account profile trong terminal, chúng ta chỉ cần mở terminal lên và gõ lệnh sau để cài đặt. Việc cài đặt này có thể thực thi ở bất cứ một device nào đã  config AWS profile (thậm chí là máy ảo)
 ```
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-
 mv /tmp/eksctl /usr/local/bin
-
 eksctl version
 ```
 
@@ -69,6 +87,8 @@ eksctl version
 
 ```
 aws ec2 create-key-pair --key-name k8s-demo --query 'KeyMaterial' --output text> k8s-demo.pem
+cat k8s-demo.pem
+// Sau đó copy Private key lại để sau này sử dụng
 ```
 
 Hoặc có thể thao tác tạo key pair trên AWS Console
