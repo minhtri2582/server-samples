@@ -136,7 +136,8 @@ kubectl get svc
 
 # 2 - Tạo CI/CD với AWS CodePipeline
 Đây là sơ đồ triển khai CI/CD bằng công cụ AWS CodePipeline chúng ta sẽ làm trong phần này:
-> **TODO:** Vẽ hình flow Github, CodePipeline, CodeBuild, ECR, EKS
+<img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cicd.png"/>
+
 ### 2.1 - Chuẩn bị (S3, IAM Roles, RBAC) 
 1. Tạo S3 bucket
 Cho CodePiple lưu artifact (tạo ra tập tin build.json sau mỗi lần build)
