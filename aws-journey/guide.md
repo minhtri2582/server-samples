@@ -94,7 +94,7 @@ eksctl create cluster --name k8s-demo --region ap-southeast-1 --nodegroup-name k
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/03.png">
 - Để kiểm tra, mình sẽ sử dụng kubectl:
 
-```
+```shell
 kubectl get nodes
 ```
 
@@ -109,19 +109,19 @@ kubectl get nodes
 
 - Tiếp theo, mình sẽ deploy Static Website vào EKS Cluster mình vừa tạo. Để deploy, đầu tiên mình sẽ chạy command sau:
 
-```
+```sh
 kubectl create deployment mywebsite --image=minhtri2582/mywebsite
 ```
 
 - Để có thể truy cập Website từ bên ngoài EKS cluster, chúng ta sẽ phải deploy một LoadBalancer Service vào cluster bằng command sau:
 
-```
+```sh
 kubectl expose deployments/mywebsite --type=LoadBalancer --port=80
 ```
 
 - Để xem thông tin về LoadBalancer trên, mình sẽ chạy command sau:
 
-```
+```sh
 kubectl get svc
 ```
 
@@ -150,7 +150,7 @@ aws s3 mb s3://eks-${ACCOUNT_ID}-codepipeline-artifacts
 
 - CodePileline và CodeBuild cần phải có các IAM roles để tạo Docker, push image và tương tác với EKS cluster qua command kubectl.
 Tải các file json chính sách, sau đó tạo các role **eks-CodePipelineServiceRole, eks-CodePipelineServiceRole** và thêm inline policy từ terminal như sau:
-```
+```shell
 wget https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cpAssumeRolePolicyDocument.json
 
 aws iam create-role --role-name eks-CodePipelineServiceRole --assume-role-policy-document file://cpAssumeRolePolicyDocument.json
@@ -162,7 +162,7 @@ aws iam put-role-policy --role-name eks-CodePipelineServiceRole --policy-name co
 
 3. Tạo Role CodeBuildServiceRole
 
-```
+```shell
 wget https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cbAssumeRolePolicyDocument.json
 
 aws iam create-role --role-name eks-CodeBuildServiceRole --assume-role-policy-document file://cbAssumeRolePolicyDocument.json
@@ -177,12 +177,12 @@ aws iam put-role-policy --role-name eks-CodeBuildServiceRole --policy-name codeb
 Để CodeBuild có thể tương tác với EKS, chúng ta sẽ chỉnh sửa configMap **aws-auth**
 - Từ terminal đã kết nối EKS cluster, lấy bản sao configMap aws-auth bằng command:
 
-```
+```shell
 kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
 ```
 
 - Tập tin này sẽ có định dang như sau:
-```
+```yaml
 apiVersion: v1
 data:
   mapRoles: |
@@ -201,7 +201,7 @@ metadata:
 
 - Chỉnh file aws-auth.yaml, thêm một item trong mảng **data.mapRoles**:
 
-```
+```yaml
 - groups:
     - system:masters
   rolearn: arn:aws:iam::{$AWS_ACCOUNT_ID}}:role/eks-CodeBuildServiceRole
@@ -212,7 +212,7 @@ _(Thay thế **AWS_ACCOUNT_ID** tương ứng)_
 
 - Tập aws-auth.yaml sau khi thêm role <b>eks-CodeBuildServiceRole</b> có dạng như sau (**Lưu ý**: xóa dòng _metadata.creationTimestamp_)
 
-```
+```yaml
 apiVersion: v1
 data:
   mapRoles: |
@@ -234,7 +234,7 @@ metadata:
 
 - Apply tập tin aws-auth.yaml đã thay đổi từ terminal:
 
-```
+```sh
 kubectl apply -f aws-auth.yaml
 ```
 
@@ -299,7 +299,7 @@ https://raw.githubusercontent.com/minhtri2582/server-samples/3fd9f41672b171483db
 
 2. Thử thay đổi nội dung thẻ title của tập tin <b>index.htlm</b>:
 
-```
+```html
 <!doctype html>
 <html lang="en">
 <head>
