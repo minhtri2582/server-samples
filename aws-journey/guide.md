@@ -170,6 +170,8 @@ kubectl get svc
 <br>
 
 # 2 - Tạo CI/CD với AWS CodePipeline
+**AWS CodePipeline** là một dịch vụ phân phối liên tục được quản lý hoàn toàn giúp bạn tự động hóa các đường dẫn phát hành của mình để cập nhật ứng dụng và cơ sở hạ tầng nhanh chóng và đáng tin cậy.
+
 Đây là sơ đồ triển khai CI/CD bằng công cụ AWS CodePipeline chúng ta sẽ làm trong phần này:
 <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cicd.png"/>
 
@@ -211,7 +213,7 @@ aws iam put-role-policy --role-name eks-CodeBuildServiceRole --policy-name codeb
 
 #### 2.1.4 -  Cho phép role eks-CodeBuildServiceRolequyền trong RBAC của EKS cluster
 Để CodeBuild có thể tương tác với EKS, chúng ta sẽ chỉnh sửa configMap **aws-auth**
-- Từ terminal đã kết nối EKS cluster, lấy bản sao configMap aws-auth bằng command:
+- Từ terminal mà bạn đã kết nối EKS cluster, lấy bản sao configMap aws-auth bằng command:
 
 ```shell
 kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
@@ -276,7 +278,7 @@ metadata:
 kubectl apply -f aws-auth.yaml
 ```
 
-- Sau khi chạy thành công màn hình có kết quả như sau: 
+- Sau khi chạy thành công thì màn hình có kết quả như sau: 
 
 ```
 # configmap/aws-auth unchanged configured
@@ -343,13 +345,14 @@ Trong màn hình quản trị CloudFormation: Chọn **Create stack - with new r
   <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CB-DetailSuccess.png"/>
 
 ### 2.4 - Kiểm tra CI/CD
-1. Vào trang https://github.com/, chọn repository đã fork ở phần 2.2:
+#### 2.4.1 - Thay đổi repository
+- Vào trang https://github.com/, chọn repository đã fork ở phần 2.2:
 
 > **TODO:** Chụp hình source code GitHub
 
 <br>
 
-2. Thử thay đổi nội dung thẻ title của tập tin <b>index.htlm</b>:
+- Thay đổi nội dung thẻ **title** trong tập tin <b>index.htlm</b>:
 
 ```html
 <!doctype html>
@@ -359,20 +362,25 @@ Trong màn hình quản trị CloudFormation: Chọn **Create stack - with new r
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Test CodePipeline</title>
-```
-> **TODO:** Chụp hình màn hình edit file index.htlm
-
-<br> 
-
-3. Click **Commit changes**:
+``` 
+- Click **Commit changes**:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/github-commit-index.png"/>
 
 <br>
 
-4. Sau khi push code, vào trang quản trị **CodePipeline** sẽ thấy trạng thái của pipeline là _In Progress_:
+#### 2.4.2 - Kiểm tra CodePipeline
+- Sau khi push code, CodePipeline sẽ được trigger để thực thị CodeBuild. Vào trang quản trị **CodePipeline** sẽ thấy trạng thái của pipeline là _In Progress_:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/CP-trigger.png"/>
-
-5. Chờ 5 phút để quá trình build _Success_. Vào website URL xem thay đổi:
+- Pipele của có 2 stage:
+  - **Source**
+    - Pull source từ GitHub
+    - Đóng gói source cho stage build
+  - **Build**
+    - Tạo Docker image từ source
+    - Đẩy image lên ECR repository
+    - Triển khai cập nhật ứng dụng lên EKS cluster
+- Chờ khoảng 5-10 phút để quá trình build hoàn thành và chuyển sang trạng thái **_Success_**. 
+- Vào website URL xem thay đổi. Lúc này title của website đã chuyển thành **"Test CodePipeline"**:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/web-change.png"/>
 
 <br>
