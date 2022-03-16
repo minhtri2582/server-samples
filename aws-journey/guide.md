@@ -22,7 +22,7 @@ Tham khảo thêm ở đây https://docs.aws.amazon.com/cli/latest/userguide/get
 Ở đây mình sử dụng cách đơn giản nhất cho MAC/Window là cài đặt trực tiếp file .exe(đối với Window) và file .pkg (đối với MAC).
 >Lưu ý là guide này sử dụng cho terminal của MAC hoặc Linux.
 - MAC: https://awscli.amazonaws.com/AWSCLIV2.pkg
-- Window: https://awscli.amazonaws.com/AWSCLIV2.pkg
+- Window: https://awscli.amazonaws.com/AWSCLIV2.msi
 - Linux: mở terminal và dùng lệnh 
 ```
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
