@@ -144,7 +144,7 @@ kubectl get nodes
 - Tiếp theo, mình sẽ deploy một static Website vào EKS Cluster mình vừa tạo. Để deploy, đầu tiên mình sẽ chạy command sau:
 
 ```sh
-kubectl create deployment mywebsite --image=minhtri2582/mywebsite
+kubectl create deployment mywebsite --image=minhtri2582/aws-guide-web
 ```
 
 - Để có thể truy cập Website từ bên ngoài EKS cluster, chúng ta sẽ phải deploy một LoadBalancer Service vào cluster bằng command sau:
@@ -284,11 +284,27 @@ kubectl apply -f aws-auth.yaml
 ```
 
 ### 2.2 - Fork source code về GitHub
-```shell
-https://github.com/minhtri2582/eks-web-example
-```
-> **TODO:** hướng dẫn fork source từ Github https://github.com/minhtri2582/eks-web-example để có quyền push code, tạo personal token
+#### 2.2.1: Fork source về GitHub Account cá nhân 
+- Mở link GitHub https://github.com/duocntg1/aws-guide-resume-template, chọn Fork:
+<img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-fork.png"/>
+  
 
+- Sau khi Fork về GitHub Account của bạn {GITHUB_ACCCOUNT}/aws-guide-resume-template, bạn có thể chỉnh sửa file và commit code để thực hiện bước sau
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-fork-done.png"/>
+
+#### 2.2.2: Tạo Personal access tokens
+- Mở link: https://github.com/settings/tokens, click **Generate new token:**
+<img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-token-1.png"/>
+
+
+- GitHub sẽ xác nhận mật khẩu login của bạn:
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-token-2.png"/>
+
+- Màn hình tạo token, nhập **Note** tùy ý, stick chọn **repo**, cuối trang click **Generate token**:
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-token-3.png"/>
+
+- Sau khi tạo xong token, bạn hãy copy ra đâu đó để dùng cho bước sau:
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/github-token-4.png"/>
 ### 2.3 - Tạo CodePipeline bằng CloudFormation
 Bước tiếp theo chúng ta sẽ tạo CodePipeline sử dụng công cụ AWS CloudFormation. 
 #### 2.3.1 - Download template
@@ -308,10 +324,10 @@ Trong màn hình quản trị CloudFormation: Chọn **Create stack - with new r
 - Nhập thông tin GitHub (đã tạo ở phần 2.2) và EKS Cluster (đã tạo ở phần 1):
   <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CF-Input.png"/>
   
-  - Username: **[github account]**
+  - Username: **[github account của bạn]**
   - Access token: **[token tạo bước trước]**
-  - Repository: **[tên repository]**
-  - Branch: **[nhánh của repository]**
+  - Repository: **aws-guide-resume-template** -> tên repo đã fork ở bước trước 
+  - Branch: **main**
   - EksCluster: **k8s-demo**
   - EksDeployment: **mywebsite** (phải cùng với tên k8s deployment ở phần 1)
   - EksNamespace: **default** (cùng với namespace đã tạo deployment ở phần 1, mặc định là default)
@@ -344,24 +360,16 @@ Trong màn hình quản trị CloudFormation: Chọn **Create stack - with new r
   <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/CB-DetailSuccess.png"/>
 
 ### 2.4 - Kiểm tra CI/CD
-#### 2.4.1 - Thay đổi repository
-- Vào trang https://github.com/, chọn repository đã fork ở phần 2.2:
-
-> **TODO:** Chụp hình source code GitHub
+#### 2.4.1 - Thay đổi code
+- Vào GitHub cụa bạn https://github.com/{GITHUB_ACCOUNT}/aws-guide-resume-template, chọn repository đã fork ở phần 2.2. Mở file **index.htlm**, chọn icon chỉnh sửa:
+<img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cicd-1.png"/>
 
 <br>
 
-- Thay đổi nội dung thẻ **title** trong tập tin <b>index.htlm</b>:
+- Thay đổi dòng 48, _John Doe_ thành _AWS Cloud_ :
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cicd-2.png"/>
 
-```html
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Test CodePipeline</title>
-``` 
+ 
 - Click **Commit changes**:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/github-commit-index.png"/>
 
@@ -380,6 +388,6 @@ Trong màn hình quản trị CloudFormation: Chọn **Create stack - with new r
     - Triển khai cập nhật ứng dụng lên EKS cluster
 - Chờ khoảng 5-10 phút để quá trình build hoàn thành và chuyển sang trạng thái **_Success_**. 
 - Vào website URL xem thay đổi. Lúc này title của website đã chuyển thành **"Test CodePipeline"**:
-  <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/web-change.png"/>
+  <img src="https://raw.githubusercontent.com/minhtri2582/server-samples/master/aws-journey/cicd-3.png"/>
 
 <br>
