@@ -164,7 +164,7 @@ kubectl get svc
 
 - Copy link trong **EXTERNAL-IP** vào trình duyệt sẽ truy cập được website:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/15.png">
->> TODO: Được replace cái hình web mới vào nhé!
+
   
 <br>
 
