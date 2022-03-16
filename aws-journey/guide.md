@@ -84,7 +84,7 @@ Bước tiếp theo là cấu hình AWS CLI để có thể truy cập vào các
 aws configure
 ``` 
 
-- Tại đây ta sẽ dùng cập Access Key vừa tạo để thiết lập môi trường kết nối với AWS và thực hiện cài đặt eksctl:
+- Tại đây ta sẽ dùng cặp Access Key/Secret Key vừa tạo ở **bước 1.2.2** để thiết lập môi trường kết nối với AWS và thực hiện cài đặt eksctl:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/add-user/07.png">
 
 
@@ -134,7 +134,7 @@ kubectl get nodes
 
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/10.png" alt="">
 
-- Kiểm tra trên **AWS Console** để xem các Resource được tạo
+- Kiểm tra trên **AWS Console** để xem các Resource được tạo: **EKS Cluster, EC2 EKS Nodes, EC2 Loadbalancer**
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/11.png">
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/12.png">
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/13.png">
@@ -146,7 +146,6 @@ kubectl get nodes
 ```sh
 kubectl create deployment mywebsite --image=minhtri2582/mywebsite
 ```
->TODO: Hướng dẫn cài kubectl!!!!!
 
 - Để có thể truy cập Website từ bên ngoài EKS cluster, chúng ta sẽ phải deploy một LoadBalancer Service vào cluster bằng command sau:
 
@@ -155,7 +154,7 @@ kubectl expose deployments/mywebsite --type=LoadBalancer --port=80
 ```
 > **Lưu ý**: _tên deployment **mywebsite**, chúng ra sẽ dùng tên này trong phần 2, bạn có thể thay đổi tên deployment nhưng phải match với tên ở phần 2._ 
 
-- Để xem thông tin về LoadBalancer trên, mình sẽ chạy command sau:
+- Để xem thông tin về **LoadBalancer** trên, mình sẽ chạy command sau:
 
 ```sh
 kubectl get svc
@@ -163,9 +162,9 @@ kubectl get svc
 
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/14.png" alt="">
 
-- Copy link trong External-ip vào trình duyệt sẽ truy cập được website:
+- Copy link trong **EXTERNAL-IP** vào trình duyệt sẽ truy cập được website:
   <img src="https://github.com/minhtri2582/server-samples/raw/master/aws-journey/eks/15.png">
-
+>> TODO: Được replace cái hình web mới vào nhé!
   
 <br>
 
@@ -219,7 +218,7 @@ aws iam put-role-policy --role-name eks-CodeBuildServiceRole --policy-name codeb
 kubectl get configmaps aws-auth -n kube-system -o yaml > aws-auth.yaml
 ```
 
-- Tập tin này sẽ có định dang như sau:
+- Mở tập tin **aws-auth.yaml** vừa tạo ở trên, sẽ có nội dung như sau:
 ```yaml
 apiVersion: v1
 data:
@@ -238,7 +237,7 @@ metadata:
   uid: 8e6402d2-383d-40f9-a0ba-8d6003ae5e4f
 ```
 
-- Chỉnh file aws-auth.yaml, thêm một item trong mảng **data.mapRoles**:
+- Sửa file **aws-auth.yaml** này, thêm một item trong mảng **data.mapRoles**:
 
 ```yaml
 - groups:
@@ -272,7 +271,7 @@ metadata:
   uid: 8e6402d2-383d-40f9-a0ba-8d6003ae5e4f
 ```
 
-- Apply tập tin aws-auth.yaml đã thay đổi từ terminal:
+- Apply tập tin **aws-auth.yaml** đã thay đổi từ terminal:
 
 ```sh
 kubectl apply -f aws-auth.yaml
